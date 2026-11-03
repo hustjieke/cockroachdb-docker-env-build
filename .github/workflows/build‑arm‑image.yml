@@ -1,0 +1,52 @@
+name: Build arm64 Cockroach builder image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-arm64:
+    # GitHub hosted ARM64 runner：ubuntu‑24.04‑arm64，原生aarch64，不是QEMU模拟
+    runs-on: ubuntu-24.04-arm64
+    permissions:
+      contents: read
+      packages: write  # 允许推送镜像到GHCR(github container registry)
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build docker image
+        id: docker_build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/cockroach‑arm‑builder:v1
+          # 直接原生arm64构建，不需要--platform，因为runner本身是arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ==========【可选，强烈推荐】镜像构建完成后，在容器内执行编译（--init）==========
+      - name: Run build inside container with --init
+        run: |
+          docker run --init --rm ghcr.io/${{ github.repository_owner }}/cockroach‑arm‑builder:v26.2.5 bash -c "
+            cd /home/cockroach/workspace &&
+            bazelisk --batch build //pkg/cmd/cockroach:cockroach
+          "
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
