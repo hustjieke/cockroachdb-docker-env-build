@@ -94,8 +94,8 @@ RUN printf '#!/usr/bin/expect -f\nspawn ./dev doctor --no-cache --autofix --remo
 RUN rm -rf bin
 
 # before build x86 dev, add amd64 libs
-COPY --chown=cockroach:cockroach amd64-lib/ld-linux-x86-64.so.2 /lib64/
-COPY --chown=cockroach:cockroach amd64-lib/lib*.so* /lib/x86_64-linux-gnu/
+#COPY --chown=cockroach:cockroach amd64-lib/ld-linux-x86-64.so.2 /lib64/
+#COPY --chown=cockroach:cockroach amd64-lib/lib*.so* /lib/x86_64-linux-gnu/
 
 
 RUN chmod +x /tmp/doctor.expect 
@@ -117,7 +117,7 @@ rm -rf ~/.cache/bazel ~/.cache/dev-bazel-remote
 RUN chown -R cockroach:cockroach /home/cockroach/.cache /home/cockroach/workspace
 
 RUN mkdir -p /home/cockroach/workspace/lib
-COPY --chown=cockroach:cockroach libgeos.so libgeos_c.so /home/cockroach/workspace/lib/
+#COPY --chown=cockroach:cockroach libgeos.so libgeos_c.so /home/cockroach/workspace/lib/
 
 
 # ============================================================

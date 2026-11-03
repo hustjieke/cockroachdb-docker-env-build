@@ -41,12 +41,12 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ==========【可选，强烈推荐】镜像构建完成后，在容器内执行编译（--init）==========
-      - name: Run build inside container with --init
-        run: |
-          docker run --init --rm ghcr.io/${{ github.repository_owner }}/cockroach‑arm‑builder:v26.2.5 bash -c "
-            cd /home/cockroach/workspace &&
-            bazelisk --batch build //pkg/cmd/cockroach:cockroach
-          "
+      #- name: Run build inside container with --init
+      #  run: |
+      #    docker run --init --rm ghcr.io/${{ github.repository_owner }}/cockroach‑arm‑builder:v26.2.5 bash -c "
+      #      cd /home/cockroach/workspace &&
+      #      bazelisk --batch build //pkg/cmd/cockroach:cockroach
+      #    "
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
