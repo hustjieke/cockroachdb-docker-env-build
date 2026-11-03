@@ -38,7 +38,7 @@ ENV PATH=/usr/local/go/bin:/root/go/bin:$PATH
 #RUN chmod +x /usr/local/bin/bazelisk && ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
 
 # 拷贝完整源码（含已初始化的 submodule）
-COPY --chown=cockroach:cockroach cockroach-v26.2.5 /home/cockroach/workspace
+COPY --chown=cockroach:cockroach . /home/cockroach/workspace
 
 # 设置工作目录到源码根（.bazelversion 在这里）
 WORKDIR /home/cockroach/workspace
